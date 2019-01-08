@@ -10,5 +10,4 @@ before_script:
   - npm i -g firebase-tools
 
 script:
-  - firebase use dev
   - firebase deploy --token=${FIREBASE_AUTH_TOKEN}

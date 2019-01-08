@@ -1,6 +1,5 @@
 {
   "projects": {
-    "prod": "dwarvishify",
-    "dev": "dwarvishify-dev"
+    "prod": "dwarvishify"
   }
 }

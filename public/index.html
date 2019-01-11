@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dwarvishify</title>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/5.7.2/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/5.7.2/firebase-functions.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+
     <script>
         const hrToDr = {
             'a': 'ᚨ',
@@ -84,9 +93,22 @@
         }
 
         function translateOnClick() {
+            const functions = firebase.functions();
             const text = document.getElementById('pre-translated-text').value;
-            const translatedText = transliterateToDwarvish(text);
-            document.getElementById('translated-text').innerText = translatedText;
+            let translateToCroatian = functions.httpsCallable('translateToCroatian');
+            try {
+                translateToCroatian({text}).then(result => {
+                    if (result.error) {
+                        console.err(result.error);
+                    } else {
+                        const translatedText = transliterateToDwarvish(result.data);
+                        document.getElementById('translated-text').innerText = translatedText;
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+                document.getElementById('translated-text').innerText = "Something bad happened";
+            }
         }
 
         function setup() {
@@ -94,6 +116,23 @@
                 'click',
                 translateOnClick
             )
+
+            try {
+                const functions = firebase.functions();
+                let translateToCroatian = functions.httpsCallable('translateToCroatian');
+                translateToCroatian({text: 'Hello'}).then(result => {
+                    if (result.error) {
+                        console.err(result.error);
+                        document.getElementById('translated-text').innerHTML = `Error in translation, check console`;
+                    } else {
+                        console.log(JSON.stringify(result));
+                        document.getElementById('translated-text').innerHTML = `Translated Text: ${data.text}`;
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+                document.getElementById('translated-text').innerHTML = 'Error loading the Firebase SDK, check the console.';
+            }
         }
 
         document.addEventListener("DOMContentLoaded", setup);
@@ -101,6 +140,7 @@
 </head>
 
 <body>
+    <p>Now with Croatian translation yay!</p>
     <p>Enter your text here:</p>
     <input type="text" id="pre-translated-text">
     <button id="translate">Translate!</button>

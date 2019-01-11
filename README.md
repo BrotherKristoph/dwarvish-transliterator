@@ -1,2 +1,2 @@
-# dwarvish-transliterator
-Turns your text into Elder Futhark runes (no translation unfortunately)
+# dwarvishify
+Turn your text into Dwarvish! (Croatian spelled in Elder Futhark)
